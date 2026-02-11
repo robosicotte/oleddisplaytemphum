@@ -1,0 +1,7 @@
+#Font files
+fonts/
+#VENV
+venv/
+
+#Extra files
+.lgd-nfy0
