@@ -1,5 +1,5 @@
-## Displaytest1:
-A simple test utility for a Raspberry Pi with a 128 x 64 OLED.
+## oleddisplaytemphum:
+A simple utility  to display temperature and humidity for a Raspberry Pi with a 128 x 64 OLED.
 
 ### Depends on CircuitPython which requires system-site-packages
 To make the venv
