@@ -20,3 +20,10 @@ sudo apt install fonts-dejavu-core
 Display must be connected to I2C on the Pi.
 <br/>
 Momentary switch (NO) from pin D21 to GND
+
+### Bug:
+requirements.txt does not show pillow, which is required.
+To install,
+```
+pip install pillow
+```
