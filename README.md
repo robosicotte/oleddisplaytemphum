@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ### Depends on freesans fonts:
 To install
 ```
-sudo apt install fonts-dejavu-core
+sudo apt install fonts-freefont-ttf
 ```
 ### Pinouts:
 
