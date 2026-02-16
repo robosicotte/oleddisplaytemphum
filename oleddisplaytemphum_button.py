@@ -25,13 +25,16 @@ DEFAULT_FONT_SIZE=24
 DEFAULT_Y_PADDING=8
 DEFAULT_X_PADDING=8
 DEFAULT_TIME_ON=5
-
+DEFAULT_LOG_FILE='/home/pi/pythonprog/oleddisplaytemphum/logfile.txt'
 i2c = board.I2C()  
 
 button=digitalio.DigitalInOut(board.D21)
 button.direction=digitalio.Direction.INPUT
 button.pull = digitalio.Pull.UP
         
+def append_log_file(logfilename, msg):
+    with open(logfilename, 'a') as fp:
+        fp.write(f'{datetime.now()}: {msg}\n')
 
 def poweroff(sig, frame):
     print('Powering off OLED.')
@@ -61,6 +64,7 @@ def parse_args():
     parser.add_argument('--centery', action='store_true', help='Center y.')
     parser.add_argument('--ypadding', type=int, default=DEFAULT_Y_PADDING, help=f'Y padding; default {DEFAULT_Y_PADDING}')
     parser.add_argument('--xpadding', type=int, default=DEFAULT_X_PADDING, help=f'X padding; default {DEFAULT_X_PADDING}; overwritten by centerx')
+    parser.add_argument('--logfile', '-L', type=str, default=DEFAULT_LOG_FILE, help=f'Log file name; default {DEFAULT_LOG_FILE}')
     parser.add_argument('--continuous', '-c', action='store_true', help='Continuous mode')
     args=parser.parse_args()
     return args
@@ -111,11 +115,29 @@ def main():
         while True:
             while button.value == 1:
                 pass
-            currtemphum=read_curr_temp_hum(args.filename)
-            display.poweron()
-            display_temp_hum(display, currtemphum, font, args)
+            try:
+                currtemphum=read_curr_temp_hum(args.filename)
+                log_str=f'Reading curr temp h/hum success'
+                append_log_file(args.logfile, log_str)
+            except Exception as e:
+                exception_msg_str=f'Exception while reading curr temp file: {e}'
+                print(exception_msg_str)
+                append_log_file(args.logfile, exception_msg_str)
+            try:
+                display.poweron()
+                display_temp_hum(display, currtemphum, font, args)
+                append_log_file(args.logfile, 'Display temp hum success')
+            except Exception as e:
+                exception_msg_str=f'Exception while displaying curr temp/hum: {e}'
+                print(exception_msg_str)
+                append_log_file(args.logfile, exception_msg_str)
             time.sleep(args.timeon)
-            display.poweroff()
+            try:
+                display.poweroff()
+            except Exception as e:
+                exception_msg_str=f'Exception while powering off display: {e}'
+                print(exception_msg_str)
+                append_log_file(args.logfile, exception_msg_str)
     else:
         while button.value == 1:
             pass
